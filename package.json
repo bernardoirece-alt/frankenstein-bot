@@ -1,0 +1,12 @@
+{
+  "name": "frankenstein-aviator-bot",
+  "version": "1.0.0",
+  "description": "Bot Telegram para monitorar Aviator ao vivo",
+  "main": "aviator_bot_telegram.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node aviator_bot_telegram.js"
+  }
+}

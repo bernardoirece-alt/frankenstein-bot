@@ -35,7 +35,7 @@ const CONFIG = {
   // 5. Alertas — edite os gatilhos abaixo
   ALERTAS: {
     vela_grande:   999,   // DESLIGADO — use estratégia vela_100x abaixo
-    vela_extrema:  100,   // avisa com emoji diferente
+    vela_extrema:  9999,  // DESLIGADO
     vela_maxima:   500,   // avisa com alerta especial
     sequencia_azul: 999,  // DESLIGADO — use as estratégias abaixo
     ausencia_50x:   9999, // DESLIGADO
@@ -345,6 +345,15 @@ function detectarVelasInvertidas(vela) {
       });
 
       console.log(`🔄 Par invertido: ${v.mult}x + ${vela.mult}x → entradas: ${entradas.join(', ')}`);
+
+      // Aviso imediato
+      const _em2 = ['1️⃣','2️⃣','3️⃣','4️⃣','5️⃣'];
+      let _msgInv = `🔄 <b>VELAS INVERTIDAS</b>\n`;
+      _msgInv += `⚡ ${v.mult}x + ${vela.mult}x\n\n`;
+      _msgInv += `📋 Entradas programadas:\n`;
+      entradas.forEach((e, i) => { _msgInv += `${_em2[i]||i+1} ${e}\n`; });
+      _msgInv += `\n⚠️ Aviso 5min antes de cada entrada\n🧟 Frankenstein Bot`;
+      sendTelegram(_msgInv);
       return;
     }
   }
@@ -523,6 +532,19 @@ function detectarRosaGatilho(vela) {
   });
 
   console.log(`🩷 Rosa IA: ${vela.mult}x → base ${base} → entradas: ${entradas.join(', ')}`);
+
+  // Mandar aviso imediato com as entradas geradas
+  const emojis = ['1️⃣','2️⃣','3️⃣','4️⃣','5️⃣'];
+  let msgImediata = `🩷 <b>IA ROSA GATILHO</b>\n`;
+  msgImediata += `⚡ ${vela.mult}x às ${vela.horario.slice(0,5)}\n\n`;
+  msgImediata += `🧮 Base calculada: <b>${base}</b>\n\n`;
+  msgImediata += `📋 Entradas programadas:\n`;
+  entradas.forEach((e, i) => {
+    msgImediata += `${emojis[i] || i+1} ${e}\n`;
+  });
+  msgImediata += `\n⚠️ Aviso chegará 5min antes de cada entrada\n`;
+  msgImediata += `\n<i>🧟 Frankenstein Bot</i>`;
+  sendTelegram(msgImediata);
 }
 
 function msgRosaIA(sinal, entIdx, antes) {
@@ -641,11 +663,11 @@ async function main() {
     `🧟 <b>FRANKENSTEIN BOT</b> iniciado!\n\n`
     + `📡 Monitorando Aviator ao vivo\n`
     + `⏱ Atualização a cada ${CONFIG.INTERVAL_MS / 1000}s\n\n`
-    + `<b>Alertas configurados:</b>\n`
-    + `🔥 Vela grande: ≥${CONFIG.ALERTAS.vela_grande}x\n`
-    + `🚀 Vela extrema: ≥${CONFIG.ALERTAS.vela_extrema}x\n`
-    + `🔵 Sequência azul: ${CONFIG.ALERTAS.sequencia_azul}+ seguidas\n`
-    + `⚠️ Ausência 50x: ${CONFIG.ALERTAS.ausencia_50x}+ rodadas`
+    + `<b>Estratégias ativas:</b>\n`
+    + `🔄 Velas Invertidas — avisa ${CONFIG.ESTRATEGIAS.velas_invertidas.avisar_antes}min antes\n`
+    + `🩷 Rosa IA ≥${CONFIG.ESTRATEGIAS.rosa_gatilho.mult_minima}x — avisa ${CONFIG.ESTRATEGIAS.rosa_gatilho.avisar_antes}min antes\n`
+    + `💥 Vela 100x+ — avisa ${CONFIG.ESTRATEGIAS.vela_100x.avisar_antes}min antes\n\n`
+    + `✅ Bot rodando 24h no Render!`
   );
 
   // Primeira execução

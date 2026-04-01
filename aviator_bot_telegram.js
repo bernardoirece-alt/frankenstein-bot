@@ -12,7 +12,6 @@
 
 // ── MÓDULOS NATIVOS (funciona em qualquer versão do Node) ────────
 const https = require('https');
-const http  = require('http');
 const { URL } = require('url');
 
 // ── CONFIG ───────────────────────────────────────────────────────
@@ -608,6 +607,13 @@ async function tick() {
   if (items) await processarVelas(items);
   await verificarAvisos();
 }
+
+// Render precisa de uma porta aberta — servidor HTTP simples
+const http = require('http');
+http.createServer((req, res) => {
+  res.writeHead(200);
+  res.end('🧟 Frankenstein Bot rodando!');
+}).listen(process.env.PORT || 3000);
 
 async function main() {
   console.log('🧟 FRANKENSTEIN BOT iniciado!');

@@ -663,13 +663,6 @@ async function main() {
   console.log(`⏱  Intervalo: ${CONFIG.INTERVAL_MS / 1000}s`);
   console.log(`📢 Chat: ${CONFIG.CHAT_ID}\n`);
 
-  // Teste de envio — confirma que Telegram está conectado
-  setTimeout(async () => {
-    const agora = new Date().toTimeString().slice(0,8);
-    const velaTest = { id: 99999, mult: 15.00, cor: 'rosa', horario: agora };
-    console.log('🧪 Testando envio Telegram...');
-    detectarRosaGatilho(velaTest);
-  }, 5000);
 
   // Mensagem de início
   await sendTelegram(

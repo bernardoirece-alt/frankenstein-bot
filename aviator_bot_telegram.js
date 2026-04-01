@@ -610,10 +610,25 @@ async function tick() {
 
 // Render precisa de uma porta aberta — servidor HTTP simples
 const http = require('http');
+const PORT = process.env.PORT || 3000;
+
 http.createServer((req, res) => {
-  res.writeHead(200);
-  res.end('🧟 Frankenstein Bot rodando!');
-}).listen(process.env.PORT || 3000);
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+  res.end('🧟 Frankenstein Bot rodando! Velas: ' + totalVelas);
+}).listen(PORT, () => {
+  console.log('🌐 Servidor HTTP na porta ' + PORT);
+});
+
+// Auto-ping para evitar inatividade no Render (a cada 14 minutos)
+function autoPing() {
+  const url = process.env.RENDER_EXTERNAL_URL;
+  if (!url) return;
+  const mod = url.startsWith('https') ? require('https') : require('http');
+  mod.get(url, (res) => {
+    console.log('🏓 Ping próprio: ' + res.statusCode);
+  }).on('error', () => {});
+}
+setInterval(autoPing, 14 * 60 * 1000); // a cada 14 minutos
 
 async function main() {
   console.log('🧟 FRANKENSTEIN BOT iniciado!');

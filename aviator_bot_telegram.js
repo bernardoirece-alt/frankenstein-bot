@@ -324,7 +324,9 @@ function detectarVelasInvertidas(vela) {
     if (!v || v.id === vela.id) continue;
     if (isInvertido(v.mult, vela.mult)) {
       // Par encontrado!
-      const chave = `inv_${Math.min(v.id, vela.id)}_${Math.max(v.id, vela.id)}`;
+      const _id1 = v.id > 0 ? v.id : (v.horario + v.mult);
+      const _id2 = vela.id > 0 ? vela.id : (vela.horario + vela.mult);
+      const chave = `inv_${_id1}_${_id2}`;
       if (sinaisAgendados.find(s => s.chave === chave)) return; // já agendado
 
       // Calcular entradas
@@ -365,7 +367,8 @@ function detectarVela100x(vela) {
   const cfg = CONFIG.ESTRATEGIAS.vela_100x;
   if (vela.mult < cfg.mult_minima) return;
 
-  const chave = `v100_${vela.id}`;
+  const chaveKey100 = vela.id > 0 ? vela.id : (vela.horario + '_' + vela.mult);
+  const chave = `v100_${chaveKey100}`;
   if (sinaisAgendados.find(s => s.chave === chave)) return;
 
   const horaBase = vela.horario.slice(0, 5);
@@ -517,7 +520,9 @@ function detectarRosaGatilho(vela) {
   if (vela.mult < cfg.mult_minima) return;
   if (vela.cor !== 'rosa') return;
 
-  const chave = `rosa_${vela.id}`;
+  // Usar horario+mult como chave se id=0
+  const chaveKey = vela.id > 0 ? vela.id : (vela.horario + '_' + vela.mult);
+  const chave = `rosa_${chaveKey}`;
   if (sinaisAgendados.find(s => s.chave === chave)) return;
 
   const { base, entradas } = calcEntradaRosa(vela);
@@ -657,6 +662,14 @@ async function main() {
   console.log(`📡 API: ${CONFIG.API_URL}`);
   console.log(`⏱  Intervalo: ${CONFIG.INTERVAL_MS / 1000}s`);
   console.log(`📢 Chat: ${CONFIG.CHAT_ID}\n`);
+
+  // Teste de envio — confirma que Telegram está conectado
+  setTimeout(async () => {
+    const agora = new Date().toTimeString().slice(0,8);
+    const velaTest = { id: 99999, mult: 15.00, cor: 'rosa', horario: agora };
+    console.log('🧪 Testando envio Telegram...');
+    detectarRosaGatilho(velaTest);
+  }, 5000);
 
   // Mensagem de início
   await sendTelegram(

@@ -39,7 +39,7 @@ const CONFIG = {
     vela_extrema:  100,   // avisa com emoji diferente
     vela_maxima:   500,   // avisa com alerta especial
     sequencia_azul: 999,  // DESLIGADO — use as estratégias abaixo
-    ausencia_50x:   50,   // avisa quando não sai 50x+ há X rodadas
+    ausencia_50x:   9999, // DESLIGADO
   },
 
   // 6. Estratégias de sinal
